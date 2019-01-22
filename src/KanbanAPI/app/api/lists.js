@@ -2,6 +2,26 @@ const mongoose = require('mongoose')
 
 const api = {}
 
+api.getAll = (Board, List, Token) => (req, res) => {
+  if (Token) {
+    User.findById(req.query.user_id, (error, user) => {
+      if (error) res.status(400).json(error)
+      if (user) {
+        Board.findById(req.query.board_id, (error, board) => {
+          if (error) res.status(400).json(error)
+          if (board) {
+            List.find ({ user_id: req.query.user_id, board_id: req.query.board_id },(error, list) => {
+              if (error) return res.status(400).json(error)
+              return res.status(200).json(list)
+            })
+          } else return res.status(400).json({ success: false, message: 'Invalid board' })
+        })
+      } else return res.status(400).json({ success: false, message: 'Invalid client' })
+    })
+  } else return res.status(403).send({ success: false, message: 'Unauthorized' })
+}
+
+
 api.save = (User, Board, List, Token) => (req, res) => {
   if (Token) {
     User.findById(req.query.user_id, (error, user) => {

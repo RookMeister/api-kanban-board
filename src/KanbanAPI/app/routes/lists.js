@@ -7,10 +7,19 @@ module.exports = app => {
 
   app
     .route('/api/list')
-    .post(passport.authenticate('jwt', config.session), api.save(models.User, models.Board, models.List, app.get('kanbansecret')))
+    .post(
+      passport.authenticate('jwt', config.session),
+      api.save(models.User, models.Board, models.List, app.get('kanbansecret'))
+    )
+    .get(passport.authenticate('jwt', config.session),
+      api.getAll(models.User, models.Board, models.List, app.get('kanbansecret'))
+    )
     .delete(
       passport.authenticate('jwt', config.session),
       api.remove(models.User, models.List, models.Card, app.get('kanbansecret'))
     )
-    .put(passport.authenticate('jwt', config.session), api.update(models.User, models.Board, models.List, app.get('kanbansecret')))
+    .put(
+      passport.authenticate('jwt', config.session),
+      api.update(models.User, models.Board, models.List, app.get('kanbansecret'))
+    )
 }
