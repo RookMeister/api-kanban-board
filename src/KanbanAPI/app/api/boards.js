@@ -18,15 +18,19 @@ api.save = (User, Board, Token) => (req, res) => {
     User.findOne({ _id: req.query.user_id }, (error, user) => {
       if (error) return res.status(400).json(error)
       if (user) {
-        const board = new Board({
-          user_id: req.query.user_id,
-          name: req.body.name,
-          favourites: false,
-          background: '1'
-        })
-        board.save(error => {
+        Board.count({ user_id: req.query.user_id}, (error, count) => {
           if (error) return res.status(400).json(error)
-          return res.status(200).json({ success: true, message: 'Board creation' })
+          const board = new Board({
+            user_id: req.query.user_id,
+            name: req.body.name,
+            favourites: false,
+            pos: count,
+            background: '1'
+          })
+          board.save(error => {
+            if (error) return res.status(400).json(error)
+            return res.status(200).json({ success: true, message: 'Board creation' })
+          })
         })
       } else return res.status(400).json({ success: false, message: 'Invalid board' })
     })
@@ -65,10 +69,11 @@ api.update = (User, Board, Token) => (req, res) => {
     User.findById(req.query.user_id, (error, user) => {
       if (error) res.status(400).json(error)
       if (user) {
-        let data = req.body.data
+        let data = req.body
         for (let i = 0; i < data.length; i++) {
           const el = data[i]
-          Board.findByIdAndUpdate(el.id, el.data, { new: true }, (error, board) => {
+          Board.findByIdAndUpdate(el._id, el.data, { new: true }, (error, board) => {
+            console.log(board)
             if (error) return res.status(400).json(error)
           })
         }

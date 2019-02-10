@@ -16,11 +16,10 @@ api.login = User => (req, res) => {
         if (matches && !error) {
           const token = jwt.sign({ user }, config.secret)
           return res.json({
-            id: user._id,
             success: true,
             message: 'Token granted',
             token: token,
-            user
+            user: { id: user._id, pictire: user.pictire}
           })
         } else
           return res.status(401).send({

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const api = {}
 
-api.getAll = (Board, Card, Token) => (req, res) => {
+api.getAll = (User, Board, Card, Token) => (req, res) => {
   if (Token) {
     User.findById(req.query.user_id, (error, user) => {
       if (error) res.status(400).json(error)
