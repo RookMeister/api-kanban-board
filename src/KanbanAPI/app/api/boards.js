@@ -69,11 +69,12 @@ api.update = (User, Board, Token) => (req, res) => {
     User.findById(req.query.user_id, (error, user) => {
       if (error) res.status(400).json(error)
       if (user) {
-        let data = req.body
+        let data
+        if (Array.isArray(req.body)) data = req.body
+        else data = [req.body]
         for (let i = 0; i < data.length; i++) {
           const el = data[i]
-          Board.findByIdAndUpdate(el._id, el.data, { new: true }, (error, board) => {
-            console.log(board)
+          Board.findByIdAndUpdate(el._id, el, { new: true }, (error, board) => {
             if (error) return res.status(400).json(error)
           })
         }
