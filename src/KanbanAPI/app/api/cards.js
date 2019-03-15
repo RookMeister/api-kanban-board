@@ -82,13 +82,9 @@ api.update = (User, Board, List, Card, Token) => (req, res) => {
             List.findOne({ _id: req.query.list_id }, (error, list) => {
               if (error) return res.status(400).json(error)
               if (list) {
-                let data = req.body.data
-                for (let i = 0; i < data.length; i++) {
-                  const el = data[i]
-                  Card.findByIdAndUpdate(el.id, el.data, { new: true }, (error, card) => {
-                    if (error) return res.status(400).json(error)
-                  })
-                }
+                Card.findByIdAndUpdate(req.body._id, req.body, { new: true }, (error, card) => {
+                  if (error) return res.status(400).json(error)
+                })
                 return res.status(200).json({ success: true, message: 'Update successfully' })
               } else return res.status(400).json({ success: false, message: 'Invalid list' })
             })
