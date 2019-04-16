@@ -69,15 +69,9 @@ api.update = (User, Board, Token) => (req, res) => {
     User.findById(req.query.user_id, (error, user) => {
       if (error) res.status(400).json(error)
       if (user) {
-        let data
-        if (Array.isArray(req.body)) data = req.body
-        else data = [req.body]
-        for (let i = 0; i < data.length; i++) {
-          const el = data[i]
-          Board.findByIdAndUpdate(el._id, el, { new: true }, (error, board) => {
-            if (error) return res.status(400).json(error)
-          })
-        }
+        Board.findByIdAndUpdate(req.body._id, req.body, { new: true }, (error, board) => {
+          if (error) return res.status(400).json(error)
+        })
         return res.status(200).json({ success: true, message: 'Update successfully' })
       } else return res.status(400).json({ success: false, message: 'Invalid client' })
     })
